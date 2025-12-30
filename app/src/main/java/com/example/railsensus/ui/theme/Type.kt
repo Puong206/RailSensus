@@ -2,11 +2,24 @@ package com.example.railsensus.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.example.railsensus.R
 
 // Set of Material typography styles to start with
+
+val PlusJakartaSans = FontFamily(
+    Font(R.font.plusjakartasans_extralight, FontWeight.ExtraLight),
+    Font(R.font.plusjakartasans_light, FontWeight.Light),
+    Font(R.font.plusjakartasans_regular, FontWeight.Normal),
+    Font(R.font.plusjakartasans_medium, FontWeight.Medium),
+    Font(R.font.plusjakartasans_semibold, FontWeight.SemiBold),
+    Font(R.font.plusjakartasans_bold, FontWeight.Bold),
+    Font(R.font.plusjakartasans_extrabold, FontWeight.ExtraBold)
+)
+
 val Typography = Typography(
     bodyLarge = TextStyle(
         fontFamily = FontFamily.Default,
