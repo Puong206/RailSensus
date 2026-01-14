@@ -18,6 +18,8 @@ import com.example.railsensus.modeldata.Sensus
 import com.example.railsensus.modeldata.StatistikKereta
 import com.example.railsensus.modeldata.StatistikLoko
 import com.example.railsensus.modeldata.UserProfile
+import com.example.railsensus.modeldata.VoteRequest
+import com.example.railsensus.modeldata.VoteResponse
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -141,6 +143,20 @@ interface ServiceApi {
 
     @DELETE("api/sensus/{id}")
     suspend fun deleteSensus(
+        @Path("id") sensusId: Int,
+        @Header("x-access-token") token: String
+    ): Response<ApiResponse>
+
+    //Voting
+    @POST("api/sensus/{id}/vote")
+    suspend fun voteSensus(
+        @Path("id") sensusId: Int,
+        @Header("x-access-token") token: String,
+        @Body request: VoteRequest
+    ): Response<VoteResponse>
+
+    @DELETE("api/sensus/{id}/vote")
+    suspend fun removeVote(
         @Path("id") sensusId: Int,
         @Header("x-access-token") token: String
     ): Response<ApiResponse>
