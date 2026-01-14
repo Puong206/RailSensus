@@ -18,3 +18,9 @@ data class Sensus(
     val valid_votes: Int? = null,
     val invalid_votes: Int? = null
 )
+
+// Create
+data class CreateSensusRequest(
+    val loko_id: Int,
+    val ka_id: Int
+)
