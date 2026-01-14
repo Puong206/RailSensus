@@ -10,3 +10,8 @@ data class ApiResponse(
     val ka_id: Int? = null,
     val user: UserData? = null
 )
+
+@Serializable
+data class ErrorResponse(
+    val message: String
+)
