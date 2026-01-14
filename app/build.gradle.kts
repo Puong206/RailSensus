@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -51,23 +52,32 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
     implementation(libs.compose.icons)
+    
     //Room
     implementation(libs.bundles.room)
     implementation(libs.androidx.compose.foundation.layout)
     ksp(libs.room.compiler)
+    
     //ViewModel
     implementation(libs.lifecycle.viewmodel.compose)
     implementation(libs.lifecycle.runtime.compose)
+    
     // Navigasi
     implementation(libs.navigation.compose)
-    //Retrofit untuk API
+    
+    //Retrofit & Serialization
     implementation(libs.retrofit2)
     implementation(libs.retrofit2.converter.gson)
+    implementation(libs.retrofit.serialization)
+    implementation(libs.kotlinx.serialization.json)
+    
     //Okhttp
+    implementation(libs.okhttp)
     implementation(libs.okhttp3.logging.interceptor)
+    
     //Coroutines
     implementation(libs.coroutines.android)
-
+    
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
