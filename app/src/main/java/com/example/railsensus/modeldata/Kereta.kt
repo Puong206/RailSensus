@@ -8,3 +8,8 @@ data class Kereta(
     val nama_ka: String,
     val no_ka: String,
 )
+
+@Serializable
+data class StatistikKereta(
+    val total: Int
+)
