@@ -24,3 +24,9 @@ data class CreateSensusRequest(
     val loko_id: Int,
     val ka_id: Int
 )
+
+@Serializable
+data class CreateSensusResponse(
+    val message: String,
+    val sensus_id: Int
+)
