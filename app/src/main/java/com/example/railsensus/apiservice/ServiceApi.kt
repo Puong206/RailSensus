@@ -6,12 +6,15 @@ import com.example.railsensus.modeldata.CreateKeretaRequest
 import com.example.railsensus.modeldata.CreateKeretaResponse
 import com.example.railsensus.modeldata.CreateLokoRequest
 import com.example.railsensus.modeldata.CreateLokoResponse
+import com.example.railsensus.modeldata.CreateSensusRequest
+import com.example.railsensus.modeldata.CreateSensusResponse
 import com.example.railsensus.modeldata.Kereta
 import com.example.railsensus.modeldata.LoginRequest
 import com.example.railsensus.modeldata.LoginResponse
 import com.example.railsensus.modeldata.Lokomotif
 import com.example.railsensus.modeldata.RegisterRequest
 import com.example.railsensus.modeldata.RegisterResponse
+import com.example.railsensus.modeldata.Sensus
 import com.example.railsensus.modeldata.StatistikKereta
 import com.example.railsensus.modeldata.StatistikLoko
 import com.example.railsensus.modeldata.UserProfile
@@ -111,4 +114,28 @@ interface ServiceApi {
         @Header("x-access-token") token: String
     ): Response<ApiResponse>
 
+    //Sensus
+    @GET("api/sensus")
+    suspend fun getAllSensus(
+        @Query("page") page: Int = 1,
+        @Query("limit") limit: Int = 20
+    ): Response<List<Sensus>>
+
+    @GET("api/sensus/{id}")
+    suspend fun getSensusById(
+        @Path("id") sensusId: Int
+    ): Response<Sensus>
+
+    @POST("api/sensus")
+    suspend fun createSensus(
+        @Header("x-access-token") token: String,
+        @Body request: CreateSensusRequest
+    ): Response<CreateSensusResponse>
+
+    @PUT("api/sensus/{id}")
+    suspend fun updateSensus(
+        @Path("id") sensusId: Int,
+        @Header("x-access-token") token: String,
+        @Body request: CreateSensusRequest
+    ): Response<ApiResponse>
 }
