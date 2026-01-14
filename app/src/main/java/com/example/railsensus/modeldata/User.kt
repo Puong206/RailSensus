@@ -79,3 +79,10 @@ fun DetailLogin.toLoginRequest(): LoginRequest = LoginRequest(
     email = email,
     password = password
 )
+
+fun DetailRegister.toRegisterRequest(): RegisterRequest = RegisterRequest(
+    username = username,
+    email = email,
+    password = password,
+    role = "User"
+)
