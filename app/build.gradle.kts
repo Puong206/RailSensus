@@ -63,6 +63,11 @@ dependencies {
     //Retrofit untuk API
     implementation(libs.retrofit2)
     implementation(libs.retrofit2.converter.gson)
+    //Okhttp
+    implementation(libs.okhttp3.logging.interceptor)
+    //Coroutines
+    implementation(libs.coroutines.android)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
