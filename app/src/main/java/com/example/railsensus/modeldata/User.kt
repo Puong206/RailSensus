@@ -91,3 +91,10 @@ fun DetailRegister.toRegisterRequest(): RegisterRequest = RegisterRequest(
 fun DetailLogin.isValid(): Boolean {
     return email.isNotEmpty() && password.isNotEmpty()
 }
+
+fun DetailRegister.isValid(): Boolean {
+    return username.isNotEmpty() &&
+            email.isNotEmpty() &&
+            password.isNotEmpty() && 
+            password == confirmPassowrd
+}
