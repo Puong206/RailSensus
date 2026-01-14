@@ -49,3 +49,8 @@ fun Kereta.toDetailKereta() = DetailKereta(
     nama_ka = nama_ka,
     no_ka = no_ka
 )
+
+fun Kereta.toUIKeretaState(isEntryValid: Boolean = false) = UIKeretaState(
+    keretaDetail = this.toDetailKereta(),
+    isEntryValid = isEntryValid
+)
