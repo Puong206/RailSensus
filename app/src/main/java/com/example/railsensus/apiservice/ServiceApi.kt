@@ -17,6 +17,7 @@ import com.example.railsensus.modeldata.RegisterResponse
 import com.example.railsensus.modeldata.Sensus
 import com.example.railsensus.modeldata.StatistikKereta
 import com.example.railsensus.modeldata.StatistikLoko
+import com.example.railsensus.modeldata.UserManagement
 import com.example.railsensus.modeldata.UserProfile
 import com.example.railsensus.modeldata.VoteRequest
 import com.example.railsensus.modeldata.VoteResponse
@@ -158,6 +159,29 @@ interface ServiceApi {
     @DELETE("api/sensus/{id}/vote")
     suspend fun removeVote(
         @Path("id") sensusId: Int,
+        @Header("x-access-token") token: String
+    ): Response<ApiResponse>
+
+    //Kelola User
+    @GET("api/users")
+    suspend fun getAllUsers(
+        @Header("x-access-token") token: String,
+    ): Response<List<UserManagement>>
+
+    @GET("api/users/statistik")
+    suspend fun getUserStatistik(
+        @Header("x-access-token") token: String
+    ): Response<UserManagement>
+
+    @GET("api/users/{id}")
+    suspend fun getUserById(
+        @Path("id") userId: Int,
+        @Header("x-access-token") token: String
+    ): Response<ApiResponse>
+
+    @DELETE("api/users/{id}")
+    suspend fun deleteUser(
+        @Path("id") userId: Int,
         @Header("x-access-token") token: String
     ): Response<ApiResponse>
 }
