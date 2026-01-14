@@ -2,13 +2,16 @@ package com.example.railsensus.apiservice
 
 import androidx.room.Dao
 import com.example.railsensus.modeldata.ApiResponse
+import com.example.railsensus.modeldata.CreateKeretaRequest
 import com.example.railsensus.modeldata.CreateLokoRequest
 import com.example.railsensus.modeldata.CreateLokoResponse
+import com.example.railsensus.modeldata.Kereta
 import com.example.railsensus.modeldata.LoginRequest
 import com.example.railsensus.modeldata.LoginResponse
 import com.example.railsensus.modeldata.Lokomotif
 import com.example.railsensus.modeldata.RegisterRequest
 import com.example.railsensus.modeldata.RegisterResponse
+import com.example.railsensus.modeldata.StatistikKereta
 import com.example.railsensus.modeldata.StatistikLoko
 import com.example.railsensus.modeldata.UserProfile
 import retrofit2.Response
@@ -68,4 +71,43 @@ interface ServiceApi {
         @Path("id") lokoId: Int,
         @Header("x-access-token") token: String
     ): Response<ApiResponse>
+
+    //Kereta
+    @GET("api/kereta")
+    suspend fun getAllKereta():
+            Response<List<Kereta>>
+
+    @GET("api/kereta/{id}")
+    suspend fun getKeretaById(
+        @Path("id") kaId: Int
+    ): Response<Kereta>
+
+    @GET("api/kereta/search")
+    suspend fun searchKereta(
+        @Query("q") query: String
+    ): Response<List<Kereta>>
+
+    @GET("api/kereta/statistik")
+    suspend fun getKeretaStatistik():
+            Response<StatistikKereta>
+
+    @POST("api/kereta")
+    suspend fun createKereta(
+        @Header("x-access-token") token: String,
+        @Body request: CreateKeretaRequest
+    ): Response<CreateKeretaRequest>
+
+    @PUT("api/kereta/{id}")
+    suspend fun updateKereta(
+        @Path("id") kaId: Int,
+        @Header("x-access-token") token: String,
+        @Body request: CreateKeretaRequest
+    ): Response<ApiResponse>
+
+    @DELETE("api/kereta/{id}")
+    suspend fun deleteKereta(
+        @Path("id") kaId: Int,
+        @Header("x-access-token") token: String
+    ): Response<ApiResponse>
+    
 }
