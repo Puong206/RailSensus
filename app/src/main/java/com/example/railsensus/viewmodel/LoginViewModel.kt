@@ -2,6 +2,7 @@ package com.example.railsensus.viewmodel
 
 import androidx.lifecycle.ViewModel
 import com.example.railsensus.modeldata.UILoginState
+import com.example.railsensus.modeldata.UIRegisterState
 import com.example.railsensus.repositori.RepositoriRailSensus
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,4 +15,8 @@ class LoginViewModel (
     //Login State
     private val _loginState = MutableStateFlow(UILoginState())
     val loginState: StateFlow<UILoginState> = _loginState.asStateFlow()
+
+    //Register State
+    private val _registerState = MutableStateFlow(UIRegisterState())
+    val registerState: StateFlow<UIRegisterState> = _registerState.asStateFlow()
 }
