@@ -5,11 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.railsensus.modeldata.Lokomotif
 import com.example.railsensus.modeldata.StatistikLoko
 import com.example.railsensus.modeldata.UILokomotifState
+import com.example.railsensus.modeldata.isValid
 import com.example.railsensus.repositori.ApiResult
 import com.example.railsensus.repositori.RepositoriRailSensus
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class LokoViewModel(
@@ -113,4 +115,51 @@ class LokoViewModel(
             }
         }
     }
+
+    //form kelola
+    private fun validateForm() {
+        val isValid = _lokoFormState.value.lokomotif.isValid()
+        _lokoFormState.update { it.copy(isEntryValid = isValid) }
+    }
+
+    fun updateNomorSeri(value: String) {
+        _lokoFormState.update { it.copy(lokomotif = it.lokomotif.copy(nomor_seri = value))  }
+        validateForm()
+    }
+
+    fun updateDipoInduk(value: String) {
+        _lokoFormState.update { it.copy(lokomotif = it.lokomotif.copy(dipo_induk = value)) }
+        validateForm()
+    }
+
+    fun updateStatus(value: String) {
+        _lokoFormState.update { it.copy(lokomotif = it.lokomotif.copy(status = value)) }
+        validateForm()
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
