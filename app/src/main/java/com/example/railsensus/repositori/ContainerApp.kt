@@ -1,11 +1,21 @@
 package com.example.railsensus.repositori
 
+import kotlinx.serialization.json.Json
 import com.example.railsensus.apiservice.ServiceApi
+import okhttp3.logging.HttpLoggingInterceptor
 
 interface AppContainer{
     val serviceApi: ServiceApi
 }
 
 class ContainerApp: AppContainer{
+    private val BASE_URL = "http://10.0.2.2:3000/"
+
+    //Konfigurassi JSON untuk serialization
+    private val json = Json {
+        ignoreUnknownKeys = true
+        coerceInputValues = true
+    }
+
 
 }
