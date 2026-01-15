@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.railsensus.modeldata.Sensus
 import com.example.railsensus.modeldata.UISensusState
 import com.example.railsensus.modeldata.isValid
+import com.example.railsensus.modeldata.toCreateRequest
 import com.example.railsensus.repositori.ApiResult
 import com.example.railsensus.repositori.RepositoriRailSensus
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -109,5 +110,37 @@ class SensusViewModel(
     private fun validateForm() {
         val isValid = _sensusFormState.value.sensusDetail.isValid()
         _sensusFormState.update { it.copy(isEntryValid = isValid) }
+    }
+
+    //create
+    fun createSensus(token: String) {
+        val formData = _sensusFormState.value.sensusDetail
+        if (!formData.isValid()) {
+            _sensusFormState.update { it.copy(
+                errorMessage = "Lokomotif dan Kereta harus dipilih"
+            )}
+            return
+        }
+        viewModelScope.launch {
+            _sensusFormState.update { it.copy(isLoading = true) }
+            val request = formData.toCreateRequest()
+            when (val result = repositori.createSensus(token, request)) {
+                is ApiResult.Success -> {
+                    _sensusFormState.update { it.copy(
+                        isLoading = false,
+                        errorMessage = null
+                    )}
+                    resetForm()
+                    loadAllSensus()
+                }
+                is ApiResult.Error -> {
+                    _sensusFormState.update { it.copy(
+                        isLoading = false,
+                        errorMessage = result.message
+                    )}
+                }
+                is ApiResult.Loading -> { }
+            }
+        }
     }
 }
