@@ -42,4 +42,8 @@ class ContainerApp: AppContainer{
             .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .build()
     }
+
+    override val serviceApi: ServiceApi by lazy {
+        retrofit.create(ServiceApi::class.java)
+    }
 }
