@@ -7,6 +7,7 @@ import com.example.railsensus.modeldata.StatistikLoko
 import com.example.railsensus.modeldata.UILokomotifState
 import com.example.railsensus.modeldata.isValid
 import com.example.railsensus.modeldata.toCreateRequest
+import com.example.railsensus.modeldata.toUILokomotifState
 import com.example.railsensus.repositori.ApiResult
 import com.example.railsensus.repositori.RepositoriRailSensus
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -206,6 +207,41 @@ class LokoViewModel(
                 is ApiResult.Loading -> { }
             }
         }
+    }
+
+    //delete
+    fun deleteLoko(token: String, id: Int) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            when (val result = repositori.deleteLoko(token, id)) {
+                is ApiResult.Success -> {
+                    loadAllLoko()
+                }
+                is ApiResult.Error -> {
+                    _errorMessage.value = result.message
+                }
+                is ApiResult.Loading -> { }
+            }
+            _isLoading.value = false
+        }
+    }
+
+    //helperrrrr
+    fun setSelectedLoko(loko: Lokomotif?) {
+        _selectedLoko.value = loko
+        if (loko != null) {
+            _lokoFormState.value = loko.toUILokomotifState(isEntryValid = true)
+        }
+    }
+
+    fun resetForm() {
+        _lokoFormState.value = UILokomotifState()
+        _selectedLoko.value = null
+    }
+
+    fun clearError() {
+        _errorMessage.value = null
+        _lokoFormState.update { it.copy(errorMessage = null) }
     }
 }
 
