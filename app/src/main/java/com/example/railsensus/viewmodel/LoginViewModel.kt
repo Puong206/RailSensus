@@ -41,4 +41,8 @@ class LoginViewModel (
         validateLogin()
     }
 
+    fun updateLoginPassword(password: String) {
+        _loginState.update { it.copy(loginData = it.loginData.copy(password = password)) }
+        validateLogin()
+    }
 }
