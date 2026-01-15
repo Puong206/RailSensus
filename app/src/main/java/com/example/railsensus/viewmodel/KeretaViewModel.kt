@@ -10,6 +10,7 @@ import com.example.railsensus.repositori.RepositoriRailSensus
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class KeretaViewModel(
@@ -105,5 +106,25 @@ class KeretaViewModel(
                 is ApiResult.Loading -> { }
             }
         }
+    }
+
+    //kelola form
+    fun updateNamaKa(value: String) {
+        _keretaFormState.update { it.copy(
+            keretaDetail = it.keretaDetail.copy(nama_ka = value)
+        )}
+        validateForm()
+    }
+
+    fun updateNomorKa(value: String) {
+        _keretaFormState.update { it.copy(
+            keretaDetail = it.keretaDetail.copy(nomor_ka = value)
+        )}
+        validateForm()
+    }
+
+    private fun validateForm() {
+        val isValid = _keretaFormState.value.keretaDetail.isValid()
+        _keretaFormState.update { it.copy(isEntryValid = isValid) }
     }
 }
