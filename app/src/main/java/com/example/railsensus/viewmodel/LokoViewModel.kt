@@ -6,6 +6,7 @@ import com.example.railsensus.modeldata.Lokomotif
 import com.example.railsensus.modeldata.StatistikLoko
 import com.example.railsensus.modeldata.UILokomotifState
 import com.example.railsensus.modeldata.isValid
+import com.example.railsensus.modeldata.toCreateRequest
 import com.example.railsensus.repositori.ApiResult
 import com.example.railsensus.repositori.RepositoriRailSensus
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -135,6 +136,41 @@ class LokoViewModel(
     fun updateStatus(value: String) {
         _lokoFormState.update { it.copy(lokomotif = it.lokomotif.copy(status = value)) }
         validateForm()
+    }
+
+    //create
+    fun createLoko(token: String) {
+        val formData = _lokoFormState.value.lokomotif
+
+        if (!formData.isValid()) {
+            _lokoFormState.update { it.copy(errorMessage = "Nomor Seri dan Dipo Induk harus diisi") }
+            return
+        }
+
+        viewModelScope.launch {
+            _lokoFormState.update { it.copy(isLoading = true) }
+
+            val request = formData.toCreateRequest()
+            when (val result = repositori.createLoko(token, request)) {
+                is ApiResult.Success -> {
+                    _lokoFormState.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMessage = null
+                        )
+                    }
+                    resetForm()
+                    loadAllLoko()
+                }
+                is ApiResult.Error -> {
+                    _lokoFormState.update { it.copy(
+                        isLoading = false,
+                        errorMessage = result.message
+                    ) }
+                }
+                is ApiResult.Loading -> { }
+            }
+        }
     }
 }
 
