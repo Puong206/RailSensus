@@ -6,6 +6,7 @@ import com.example.railsensus.modeldata.CreateLokoRequest
 import com.example.railsensus.modeldata.CreateSensusRequest
 import com.example.railsensus.modeldata.LoginRequest
 import com.example.railsensus.modeldata.RegisterRequest
+import com.example.railsensus.modeldata.VoteRequest
 
 class RepositoriRailSensus(
     private val serviceApi: ServiceApi
@@ -101,5 +102,14 @@ class RepositoriRailSensus(
 
     suspend fun deleteSensus(token: String, id: Int) =  safeApiCall {
         serviceApi.deleteKereta(id, token)
+    }
+
+    //Voting
+    suspend fun voteSensus(token: String, sensusId: Int, tipeVote: String) = safeApiCall {
+        serviceApi.voteSensus(sensusId, token, VoteRequest(tipeVote))
+    }
+
+    suspend fun removeVote(token: String, sensusId: Int) = safeApiCall {
+        serviceApi.removeVote(sensusId, token)
     }
 }
