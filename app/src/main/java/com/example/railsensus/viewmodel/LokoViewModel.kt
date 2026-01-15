@@ -60,6 +60,7 @@ class LokoViewModel(
                 }
                 is ApiResult.Loading -> { }
             }
+            _isLoading.value = false
         }
     }
 
@@ -77,6 +78,7 @@ class LokoViewModel(
                 }
                 is ApiResult.Loading -> { }
             }
+            _isLoading.value = false
         }
     }
 
