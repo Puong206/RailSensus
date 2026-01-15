@@ -46,4 +46,8 @@ class ContainerApp: AppContainer{
     override val serviceApi: ServiceApi by lazy {
         retrofit.create(ServiceApi::class.java)
     }
+
+    val repositoriRailSensus: RepositoriRailSensus by lazy {
+        RepositoriRailSensus(serviceApi)
+    }
 }
