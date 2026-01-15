@@ -53,4 +53,21 @@ class KeretaViewModel(
             _isLoading.value = false
         }
     }
+
+    //loadbyid
+    fun loadKeretaById(id: Int) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            when (val result = repositori.getKeretaById(id)) {
+                is ApiResult.Success -> {
+                    _selectedKereta.value = result.data
+                }
+                is ApiResult.Error -> {
+                    _errorMessage.value = result.message
+                }
+                is ApiResult.Loading -> { }
+            }
+            _isLoading.value = false
+        }
+    }
 }
