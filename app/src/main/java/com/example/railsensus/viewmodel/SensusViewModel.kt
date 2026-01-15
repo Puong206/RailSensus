@@ -180,4 +180,21 @@ class SensusViewModel(
             }
         }
     }
+
+    //delete
+    fun deleteSensus(token: String, id: Int) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            when (val result = repositori.deleteSensus(token, id)) {
+                is ApiResult.Success -> {
+                    loadAllSensus()
+                }
+                is ApiResult.Error -> {
+                    _errorMessage.value = result.message
+                }
+                is ApiResult.Loading -> { }
+            }
+            _isLoading.value = false
+        }
+    }
 }
