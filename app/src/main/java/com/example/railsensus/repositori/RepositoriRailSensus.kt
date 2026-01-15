@@ -101,7 +101,7 @@ class RepositoriRailSensus(
     }
 
     suspend fun deleteSensus(token: String, id: Int) =  safeApiCall {
-        serviceApi.deleteKereta(id, token)
+        serviceApi.deleteSensus(id, token)
     }
 
     //Voting
