@@ -167,4 +167,8 @@ class LoginViewModel (
             }
         }
     }
+
+    fun clearRegisterError() {
+        _registerState.update { it.copy(errorMessage = null) }
+    }
 }
