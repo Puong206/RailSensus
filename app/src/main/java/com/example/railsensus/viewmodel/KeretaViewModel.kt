@@ -70,4 +70,25 @@ class KeretaViewModel(
             _isLoading.value = false
         }
     }
+
+    //search
+    fun searchKereta(query: String) {
+        if (query.isBlank()) {
+            loadAllKereta()
+            return
+        }
+        viewModelScope.launch {
+            _isLoading.value = true
+            when (val result = repositori.searchKereta(query)) {
+                is ApiResult.Success -> {
+                    _keretaList.value = result.data
+                }
+                is ApiResult.Error -> {
+                    _errorMessage.value = result.message
+                }
+                is ApiResult.Loading -> { }
+            }
+            _isLoading.value = false
+        }
+    }
 }
