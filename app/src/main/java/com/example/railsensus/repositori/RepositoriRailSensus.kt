@@ -1,6 +1,7 @@
 package com.example.railsensus.repositori
 
 import com.example.railsensus.apiservice.ServiceApi
+import com.example.railsensus.modeldata.CreateLokoRequest
 import com.example.railsensus.modeldata.LoginRequest
 import com.example.railsensus.modeldata.RegisterRequest
 
@@ -20,4 +21,34 @@ class RepositoriRailSensus(
     suspend fun getProfile(token: String) = safeApiCall {
         serviceApi.getProfile(token)
     }
+
+    //Loko
+    suspend fun getAllLoko() = safeApiCall {
+        serviceApi.getAllLoko()
+    }
+
+    suspend fun getLokoById(id: Int) = safeApiCall {
+        serviceApi.getLokoById(id)
+    }
+
+    suspend fun searchLoko(query: String) = safeApiCall {
+        serviceApi.searchLoko(query)
+    }
+
+    suspend fun getLokoStatistik() = safeApiCall {
+        serviceApi.getLokoStatistik()
+    }
+
+    suspend fun createLoko(token: String, data: CreateLokoRequest) = safeApiCall {
+        serviceApi.createLoko(token, data)
+    }
+
+    suspend fun updateLoko(token: String, id: Int, data: CreateLokoRequest) = safeApiCall {
+        serviceApi.updateLoko(id, token, data)
+    }
+
+    suspend fun deleteLoko(token: String, id: Int) = safeApiCall {
+        serviceApi.deleteLoko(id, token)
+    }
+
 }
