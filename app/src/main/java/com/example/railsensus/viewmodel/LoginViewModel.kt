@@ -4,10 +4,12 @@ import androidx.lifecycle.ViewModel
 import com.example.railsensus.modeldata.UILoginState
 import com.example.railsensus.modeldata.UIRegisterState
 import com.example.railsensus.modeldata.UserProfile
+import com.example.railsensus.modeldata.isValid
 import com.example.railsensus.repositori.RepositoriRailSensus
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 class LoginViewModel (
     private val repository: RepositoriRailSensus
@@ -27,4 +29,12 @@ class LoginViewModel (
 
     private val _currentUser = MutableStateFlow<UserProfile?>(null)
     val currentUser: StateFlow<UserProfile?> = _currentUser.asStateFlow()
+
+    //Login Function
+    private fun validateLogin() {
+        val isValid = _loginState.value.loginData.isValid()
+        _loginState.update { it.copy(isEntryValid = isValid) }
+    }
+
+
 }
