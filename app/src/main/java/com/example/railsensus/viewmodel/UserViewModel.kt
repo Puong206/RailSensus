@@ -101,4 +101,13 @@ class UserViewModel(
             _isLoading.value = false
         }
     }
+
+    //helper
+    fun setSelectedUser(user: UserManagement?) {
+        _selectedUser.value = user
+    }
+
+    fun clearError() {
+        _errorMessage.value = null
+    }
 }
