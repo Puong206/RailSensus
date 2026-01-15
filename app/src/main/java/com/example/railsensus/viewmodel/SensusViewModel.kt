@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.railsensus.modeldata.Sensus
 import com.example.railsensus.modeldata.UISensusState
+import com.example.railsensus.modeldata.isValid
 import com.example.railsensus.repositori.ApiResult
 import com.example.railsensus.repositori.RepositoriRailSensus
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -77,7 +78,6 @@ class SensusViewModel(
     fun loadSensusById(id: Int) {
         viewModelScope.launch {
             _isLoading.value = true
-
             when (val result = repositori.getSensusById(id)) {
                 is ApiResult.Success -> {
                     _selectedSensus.value = result.data
@@ -87,8 +87,27 @@ class SensusViewModel(
                 }
                 is ApiResult.Loading -> { }
             }
-
             _isLoading.value = false
         }
+    }
+
+    //form kelola
+    fun updateLokoId(value: Int) {
+        _sensusFormState.update { it.copy(
+            sensusDetail = it.sensusDetail.copy(loko_id = value)
+        )}
+        validateForm()
+    }
+
+    fun updateKaId(value: Int) {
+        _sensusFormState.update { it.copy(
+            sensusDetail = it.sensusDetail.copy(ka_id = value)
+        )}
+        validateForm()
+    }
+
+    private fun validateForm() {
+        val isValid = _sensusFormState.value.sensusDetail.isValid()
+        _sensusFormState.update { it.copy(isEntryValid = isValid) }
     }
 }
