@@ -69,4 +69,19 @@ class UserViewModel(
             _isLoading.value = false
         }
     }
+
+    //statistik
+    fun loadStatistik(token: String) {
+        viewModelScope.launch {
+            when (val result = repositori.getUserStatistik(token)) {
+                is ApiResult.Success -> {
+                    _statistik.value = result.data
+                }
+                is ApiResult.Error -> {
+                    _errorMessage.value = result.message
+                }
+                is ApiResult.Loading -> { }
+            }
+        }
+    }
 }
