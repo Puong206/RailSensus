@@ -17,5 +17,8 @@ class ContainerApp: AppContainer{
         coerceInputValues = true
     }
 
-
+    //Logging Interceptor untuk debugging
+    private val loggingInterceptor = HttpLoggingInterceptor().apply {
+        level = HttpLoggingInterceptor.Level.BODY
+    }
 }
