@@ -96,4 +96,38 @@ class LoginViewModel (
     fun clearLoginError() {
         _loginState.update { it.copy(errorMessage = null) }
     }
+
+    //Register
+    private fun validateRegister() {
+        val isValid = _registerState.value.registerData.isValid()
+        _registerState.update { it.copy(isEntryValid = isValid) }
+    }
+
+    fun updateRegisterUsername(username: String) {
+        _registerState.update { it.copy(registerData = it.registerData.copy(username = username)) }
+        validateRegister()
+    }
+
+    fun updateRegisterEmail(email: String) {
+        _registerState.update { it.copy(
+            registerData = it.registerData.copy(email = email)
+        )}
+        validateRegister()
+    }
+
+    fun updateRegisterPassword(password: String) {
+        _registerState.update { it.copy(
+            registerData = it.registerData.copy(password = password)
+        )}
+        validateRegister()
+    }
+
+    fun updateRegisterConfirmPassword(confirmPassword: String) {
+        _registerState.update {
+            it.copy(
+                registerData = it.registerData.copy(confirmPassword = confirmPassword)
+            )
+        }
+        validateRegister()
+    }
 }
