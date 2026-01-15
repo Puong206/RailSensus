@@ -236,7 +236,6 @@ class SensusViewModel(
 
     fun setSelectedSensus(sensus: Sensus?) {
         _selectedSensus.value = sensus
-
         if (sensus != null) {
             _sensusFormState.value = sensus.toUISensusState(isEntryValid = true)
         }
