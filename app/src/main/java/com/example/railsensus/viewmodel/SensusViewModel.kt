@@ -6,6 +6,7 @@ import com.example.railsensus.modeldata.Sensus
 import com.example.railsensus.modeldata.UISensusState
 import com.example.railsensus.modeldata.isValid
 import com.example.railsensus.modeldata.toCreateRequest
+import com.example.railsensus.modeldata.toUISensusState
 import com.example.railsensus.repositori.ApiResult
 import com.example.railsensus.repositori.RepositoriRailSensus
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -197,4 +198,41 @@ class SensusViewModel(
             _isLoading.value = false
         }
     }
+
+    //voting
+    fun voteSensus(token: String, sensusId: Int, tipeVote: String) {
+        viewModelScope.launch {
+            _isVoting.value = true
+            _errorMessage.value = null
+            when (val result = repositori.voteSensus(token, sensusId, tipeVote)) {
+                is ApiResult.Success -> {
+                    loadSensusById(sensusId)
+                }
+                is ApiResult.Error -> {
+                    _errorMessage.value = result.message
+                }
+                is ApiResult.Loading -> { }
+            }
+            _isVoting.value = false
+        }
+    }
+
+    fun removeVote(token: String, sensusId: Int) {
+        viewModelScope.launch {
+            _isVoting.value = true
+
+            when (val result = repositori.removeVote(token, sensusId)) {
+                is ApiResult.Success -> {
+                    loadSensusById(sensusId)
+                }
+                is ApiResult.Error -> {
+                    _errorMessage.value = result.message
+                }
+                is ApiResult.Loading -> { }
+            }
+            _isVoting.value = false
+        }
+    }
+
+
 }
