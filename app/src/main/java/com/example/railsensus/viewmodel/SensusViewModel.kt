@@ -72,4 +72,23 @@ class SensusViewModel(
             _isLoading.value = false
         }
     }
+
+    //load by id
+    fun loadSensusById(id: Int) {
+        viewModelScope.launch {
+            _isLoading.value = true
+
+            when (val result = repositori.getSensusById(id)) {
+                is ApiResult.Success -> {
+                    _selectedSensus.value = result.data
+                }
+                is ApiResult.Error -> {
+                    _errorMessage.value = result.message
+                }
+                is ApiResult.Loading -> { }
+            }
+
+            _isLoading.value = false
+        }
+    }
 }
