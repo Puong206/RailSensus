@@ -2,9 +2,11 @@ package com.example.railsensus.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.railsensus.modeldata.DetailKereta
 import com.example.railsensus.modeldata.Kereta
 import com.example.railsensus.modeldata.StatistikKereta
 import com.example.railsensus.modeldata.UIKeretaState
+import com.example.railsensus.modeldata.toCreateRequest
 import com.example.railsensus.repositori.ApiResult
 import com.example.railsensus.repositori.RepositoriRailSensus
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -126,5 +128,42 @@ class KeretaViewModel(
     private fun validateForm() {
         val isValid = _keretaFormState.value.keretaDetail.isValid()
         _keretaFormState.update { it.copy(isEntryValid = isValid) }
+    }
+    
+    //create
+    fun createKereta(token: String) {
+        val formData = _keretaFormState.value.keretaDetail
+
+        if (!formData.isValid()) {
+            _keretaFormState.update { it.copy(
+                errorMessage = "Nama kereta harus diisi"
+            )}
+            return
+        }
+
+        viewModelScope.launch {
+            _keretaFormState.update { it.copy(isLoading = true) }
+
+            val request = formData.toCreateRequest()
+
+            when (val result = repositori.createKereta(token, request)) {
+                is ApiResult.Success -> {
+                    _keretaFormState.update { it.copy(
+                        isLoading = false,
+                        errorMessage = null
+                    )}
+
+                    resetForm()
+                    loadAllKereta()
+                }
+                is ApiResult.Error -> {
+                    _keretaFormState.update { it.copy(
+                        isLoading = false,
+                        errorMessage = result.message
+                    )}
+                }
+                is ApiResult.Loading -> { }
+            }
+        }
     }
 }
