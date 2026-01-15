@@ -3,6 +3,7 @@ package com.example.railsensus.viewmodel
 import androidx.lifecycle.ViewModel
 import com.example.railsensus.modeldata.UILoginState
 import com.example.railsensus.modeldata.UIRegisterState
+import com.example.railsensus.modeldata.UserProfile
 import com.example.railsensus.repositori.RepositoriRailSensus
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,4 +20,11 @@ class LoginViewModel (
     //Register State
     private val _registerState = MutableStateFlow(UIRegisterState())
     val registerState: StateFlow<UIRegisterState> = _registerState.asStateFlow()
+
+    //Penyimpanan Token
+    private val _currentToken = MutableStateFlow<String?>(null)
+    val currentToken: StateFlow<String?> = _currentToken.asStateFlow()
+
+    private val _currentUser = MutableStateFlow<UserProfile?>(null)
+    val currentUser: StateFlow<UserProfile?> = _currentUser.asStateFlow()
 }
