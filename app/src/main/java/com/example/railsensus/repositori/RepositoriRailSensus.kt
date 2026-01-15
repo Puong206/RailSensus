@@ -112,4 +112,21 @@ class RepositoriRailSensus(
     suspend fun removeVote(token: String, sensusId: Int) = safeApiCall {
         serviceApi.removeVote(sensusId, token)
     }
+
+    //User
+    suspend fun getAllUsers(token: String) = safeApiCall {
+        serviceApi.getAllUsers(token)
+    }
+
+    suspend fun getUserById(token: String, id: Int) = safeApiCall {
+        serviceApi.getUserById(id, token)
+    }
+
+    suspend fun getUserStatistik(token: String) = safeApiCall {
+        serviceApi.getUserStatistik(token)
+    }
+
+    suspend fun deleteUser(token: String, id: Int) = safeApiCall {
+        serviceApi.deleteUser(id, token)
+    }
 }
