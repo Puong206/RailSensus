@@ -171,4 +171,12 @@ class LoginViewModel (
     fun clearRegisterError() {
         _registerState.update { it.copy(errorMessage = null) }
     }
+
+    //Logout
+    fun logout() {
+        _currentToken.value = null
+        _currentUser.value = null
+        _loginState.value = UILoginState()
+        _registerState.value = UIRegisterState()
+    }
 }
