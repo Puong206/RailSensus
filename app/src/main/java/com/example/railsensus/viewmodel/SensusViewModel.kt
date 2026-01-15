@@ -1,13 +1,16 @@
 package com.example.railsensus.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.railsensus.modeldata.Sensus
 import com.example.railsensus.modeldata.UISensusState
+import com.example.railsensus.repositori.ApiResult
 import com.example.railsensus.repositori.RepositoriRailSensus
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class SensusViewModel(
     private val repositori: RepositoriRailSensus
@@ -48,5 +51,25 @@ class SensusViewModel(
     fun clearError() {
         _errorMessage.value = null
         _sensusFormState.update { it.copy(errorMessage = null) }
+    }
+
+    //load all
+    fun loadAllSensus(page: Int = 1, limit: Int = 20) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _errorMessage.value = null
+
+            when (val result = repositori.getAllSensus(page, limit)) {
+                is ApiResult.Success -> {
+                    _sensusList.value = result.data
+                    _currentPage.value = page
+                }
+                is ApiResult.Error -> {
+                    _errorMessage.value = result.message
+                }
+                is ApiResult.Loading -> { }
+            }
+            _isLoading.value = false
+        }
     }
 }
