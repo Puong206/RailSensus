@@ -234,5 +234,22 @@ class SensusViewModel(
         }
     }
 
+    fun setSelectedSensus(sensus: Sensus?) {
+        _selectedSensus.value = sensus
 
+        if (sensus != null) {
+            _sensusFormState.value = sensus.toUISensusState(isEntryValid = true)
+        }
+    }
+
+    // Pagination helpers
+    fun loadNextPage() {
+        loadAllSensus(page = _currentPage.value + 1)
+    }
+
+    fun loadPreviousPage() {
+        if (_currentPage.value > 1) {
+            loadAllSensus(page = _currentPage.value - 1)
+        }
+    }
 }
