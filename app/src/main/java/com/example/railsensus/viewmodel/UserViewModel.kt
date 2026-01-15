@@ -1,12 +1,15 @@
 package com.example.railsensus.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.railsensus.modeldata.StatistikUser
 import com.example.railsensus.modeldata.UserManagement
+import com.example.railsensus.repositori.ApiResult
 import com.example.railsensus.repositori.RepositoriRailSensus
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 class UserViewModel(
     private val repositori: RepositoriRailSensus
@@ -29,4 +32,24 @@ class UserViewModel(
 
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
+
+    //load all user
+    fun loadAllUsers(token: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _errorMessage.value = null
+
+            when (val result = repositori.getAllUsers(token)) {
+                is ApiResult.Success -> {
+                    _userList.value = result.data
+                }
+                is ApiResult.Error -> {
+                    _errorMessage.value = result.message
+                }
+                is ApiResult.Loading -> { }
+            }
+
+            _isLoading.value = false
+        }
+    }
 }
