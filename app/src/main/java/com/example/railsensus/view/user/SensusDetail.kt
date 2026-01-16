@@ -19,26 +19,32 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.railsensus.R
 import com.example.railsensus.ui.component.RailSensusTheme
+import com.example.railsensus.viewmodel.SensusViewModel
+import com.example.railsensus.viewmodel.provider.RailSensusViewModel
 
 @Composable
 fun SensusDetailPage(
+    sensusId: Int,
     modifier: Modifier = Modifier,
-    trainName: String = "Argo Parahyangan",
-    lokomotifNumber: String = "CC 206 13",
-    trustScore: Double = 8.0,
-    dataAccuracy: Int = 0,
-    validCount: Int = 0,
-    invalidCount: Int = 0,
     onBackClick: () -> Unit = {},
     onValidClick: () -> Unit = {},
     onInvalidClick: () -> Unit = {},
     onProfileClick: () -> Unit = {},
     onReportClick: () -> Unit = {},
     onEditClick: () -> Unit = {},
-    onTambahFotoClick: () -> Unit = {}
+    onTambahFotoClick: () -> Unit = {},
+    sensusViewModel: SensusViewModel = viewModel(factory = RailSensusViewModel.Factory)
 ) {
+    val selectedSensus by sensusViewModel.selectedSensus.collectAsState()
+    val isLoading by sensusViewModel.isLoading.collectAsState()
+    val errorMessage by sensusViewModel.errorMessage.collectAsState()
+    
+    LaunchedEffect(sensusId) {
+        sensusViewModel.loadSensusById(sensusId)
+    }
     Scaffold(
         bottomBar = {
             SensusDetailBottomBar(
@@ -47,6 +53,49 @@ fun SensusDetailPage(
             )
         }
     ) { paddingValues ->
+        when {
+            isLoading -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = RailSensusTheme.blueColor)
+                }
+            }
+            selectedSensus == null -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.ErrorOutline,
+                            contentDescription = null,
+                            tint = RailSensusTheme.lightGrayColor,
+                            modifier = Modifier.size(64.dp)
+                        )
+                        Text(
+                            text = errorMessage ?: "Data sensus tidak ditemukan",
+                            style = TextStyle(
+                                fontSize = 16.sp,
+                                color = RailSensusTheme.lightGrayColor,
+                                fontFamily = RailSensusTheme.blueFontFamily
+                            )
+                        )
+                        TextButton(onClick = onBackClick) {
+                            Text("Kembali")
+                        }
+                    }
+                }
+            }
+            else -> {
         Column(
             modifier = modifier
                 .fillMaxSize()
@@ -135,7 +184,7 @@ fun SensusDetailPage(
                     
                     // Train Name
                     Text(
-                        text = trainName,
+                        text = selectedSensus?.nama_ka ?: "Unknown Train",
                         style = TextStyle(
                             fontSize = 26.sp,
                             color = Color.White,
@@ -146,7 +195,7 @@ fun SensusDetailPage(
                     
                     // Lokomotif Number
                     Text(
-                        text = lokomotifNumber,
+                        text = selectedSensus?.nomor_seri ?: "N/A",
                         style = TextStyle(
                             fontSize = 14.sp,
                             color = Color.White,
@@ -209,7 +258,7 @@ fun SensusDetailPage(
                                     horizontalArrangement = Arrangement.spacedBy(2.dp)
                                 ) {
                                     Text(
-                                        text = trustScore.toString(),
+                                        text = "${selectedSensus?.trust_score ?: 0}",
                                         style = TextStyle(
                                             fontSize = 32.sp,
                                             color = RailSensusTheme.blueColor,
@@ -243,7 +292,7 @@ fun SensusDetailPage(
                                     )
                                 )
                                 Text(
-                                    text = "$dataAccuracy%",
+                                    text = "${(selectedSensus?.trust_score ?: 0) * 10}%",
                                     style = TextStyle(
                                         fontSize = 24.sp,
                                         color = Color(0xFF4CAF50),
@@ -256,7 +305,7 @@ fun SensusDetailPage(
                         
                         // Progress Bar
                         LinearProgressIndicator(
-                            progress = { trustScore.toFloat() / 10f },
+                            progress = { (selectedSensus?.trust_score?.toFloat() ?: 0f) / 10f },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(8.dp)
@@ -300,7 +349,7 @@ fun SensusDetailPage(
                                         )
                                     )
                                     Text(
-                                        text = "($validCount)",
+                                        text = "(0)",
                                         style = TextStyle(
                                             fontSize = 12.sp,
                                             fontFamily = RailSensusTheme.blueFontFamily
@@ -339,7 +388,7 @@ fun SensusDetailPage(
                                         )
                                     )
                                     Text(
-                                        text = "($invalidCount)",
+                                        text = "(0)",
                                         style = TextStyle(
                                             fontSize = 12.sp,
                                             fontFamily = RailSensusTheme.blueFontFamily
@@ -482,7 +531,7 @@ fun SensusDetailPage(
                                         contentAlignment = Alignment.Center
                                     ) {
                                         Text(
-                                            text = "AR",
+                                            text = selectedSensus?.username?.take(2)?.uppercase() ?: "??",
                                             style = TextStyle(
                                                 fontSize = 16.sp,
                                                 color = Color.White,
@@ -511,7 +560,7 @@ fun SensusDetailPage(
                                 
                                 Column {
                                     Text(
-                                        text = "Arya",
+                                        text = selectedSensus?.username ?: "Unknown User",
                                         style = TextStyle(
                                             fontSize = 16.sp,
                                             color = RailSensusTheme.blueColor,
@@ -552,6 +601,8 @@ fun SensusDetailPage(
                 }
                 
                 Spacer(modifier = Modifier.height(16.dp))
+            }
+        }
             }
         }
     }
