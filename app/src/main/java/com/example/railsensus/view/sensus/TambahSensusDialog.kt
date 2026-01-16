@@ -1,4 +1,4 @@
-package com.example.railsensus.view.user.dialog
+package com.example.railsensus.view.sensus
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
