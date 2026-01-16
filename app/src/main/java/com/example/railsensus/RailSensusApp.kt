@@ -5,7 +5,7 @@ import com.example.railsensus.repositori.AppContainer
 import com.example.railsensus.repositori.ContainerApp
 
 class RailSensusApp : Application() {
-    
+
     lateinit var container: AppContainer
 
     override fun onCreate() {
