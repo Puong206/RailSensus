@@ -23,8 +23,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.railsensus.modeldata.Sensus
 import com.example.railsensus.ui.component.RailSensusLogo
 import com.example.railsensus.ui.component.RailSensusTheme
-import com.example.railsensus.view.user.RailSensusBottomNavigation
-import com.example.railsensus.view.user.dialog.TambahSensusDialog
+import com.example.railsensus.view.RailSensusBottomNavigation
 import com.example.railsensus.viewmodel.LoginViewModel
 import com.example.railsensus.viewmodel.SensusViewModel
 import com.example.railsensus.viewmodel.provider.RailSensusViewModel
