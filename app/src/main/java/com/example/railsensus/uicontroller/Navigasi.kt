@@ -13,6 +13,8 @@ import com.example.railsensus.view.LandingPage
 import com.example.railsensus.view.auth.LoginPage
 import com.example.railsensus.view.auth.RegisterPage
 import com.example.railsensus.view.home.DashboardPage
+import com.example.railsensus.view.kereta.KeretaDetailPage
+import com.example.railsensus.view.kereta.KeretaPage
 import com.example.railsensus.view.lokomotif.LokoDetailPage
 import com.example.railsensus.view.lokomotif.LokoPage
 import com.example.railsensus.view.sensus.SensusDetailPage
@@ -37,13 +39,14 @@ sealed class RailSensusScreen(val route: String) {
     object LokoDetail : RailSensusScreen("lokoDetail/{lokoId}") {
         fun createRoute(lokoId: Int) = "lokoDetail/$lokoId"
     }
+    object KeretaPage : RailSensusScreen("keretaPage")
+    object KeretaDetail : RailSensusScreen("keretaDetail/{kaId}") {
+        fun createRoute(kaId: Int) = "keretaDetail/$kaId"
+    }
     object UserPage : RailSensusScreen("userPage")
 }
 
-/**
- * Navigation Host untuk RailSensus
- * Mengelola semua navigasi antar screen dalam aplikasi
- */
+
 @Composable
 fun RailSensusNavigation(
     modifier: Modifier = Modifier,
@@ -106,14 +109,17 @@ fun RailSensusNavigation(
         // Dashboard Page
         composable(route = RailSensusScreen.Dashboard.route) {
             DashboardPage(
-                onSensusClick = { sensusId ->
-                    navController.navigate(RailSensusScreen.SensusDetail.createRoute(sensusId))
+                onSaranaClick = {
+                    navController.navigate(RailSensusScreen.LokoPage.route)
+                },
+                onSensusClick = {
+                    navController.navigate(RailSensusScreen.SensusPage.route)
+                },
+                onUserManagementClick = {
+                    navController.navigate(RailSensusScreen.UserPage.route)
                 },
                 onBottomNavClick = { index ->
                     handleBottomNavigation(navController, index)
-                },
-                onTambahSensusClick = {
-                    navController.navigate(RailSensusScreen.SensusPage.route)
                 }
             )
         }
@@ -121,11 +127,6 @@ fun RailSensusNavigation(
         // Sensus Page
         composable(route = RailSensusScreen.SensusPage.route) {
             SensusPage(
-                onBackClick = {
-                    navController.navigate(RailSensusScreen.Dashboard.route) {
-                        popUpTo(RailSensusScreen.Dashboard.route) { inclusive = true }
-                    }
-                },
                 onItemClick = { sensusId ->
                     navController.navigate(RailSensusScreen.SensusDetail.createRoute(sensusId))
                 },
@@ -154,11 +155,6 @@ fun RailSensusNavigation(
         // Loko / Sarana Page
         composable(route = RailSensusScreen.LokoPage.route) {
             LokoPage(
-                onBackClick = {
-                    navController.navigate(RailSensusScreen.Dashboard.route) {
-                        popUpTo(RailSensusScreen.Dashboard.route) { inclusive = true }
-                    }
-                },
                 onItemClick = { lokoId ->
                     navController.navigate(RailSensusScreen.LokoDetail.createRoute(lokoId))
                 },
@@ -187,17 +183,41 @@ fun RailSensusNavigation(
             )
         }
         
+        // Kereta Page
+        composable(route = RailSensusScreen.KeretaPage.route) {
+            KeretaPage(
+                onItemClick = { kaId ->
+                    navController.navigate(RailSensusScreen.KeretaDetail.createRoute(kaId))
+                },
+                onBottomNavClick = { index ->
+                    handleBottomNavigation(navController, index)
+                }
+            )
+        }
+        
+        // Kereta Detail
+        composable(
+            route = RailSensusScreen.KeretaDetail.route,
+            arguments = listOf(
+                navArgument("kaId") { type = NavType.IntType }
+            )
+        ) { backStackEntry ->
+            val kaId = backStackEntry.arguments?.getInt("kaId") ?: 0
+            KeretaDetailPage(
+                kaId = kaId,
+                onBackClick = {
+                    navController.popBackStack()
+                },
+                onDeleteClick = {
+                    navController.popBackStack()
+                }
+            )
+        }
+        
         // User Page
         composable(route = RailSensusScreen.UserPage.route) {
             UserPage(
-                onBackClick = {
-                    navController.navigate(RailSensusScreen.Dashboard.route) {
-                        popUpTo(RailSensusScreen.Dashboard.route) { inclusive = true }
-                    }
-                },
                 onItemClick = { userId ->
-                    // TODO: Navigate to user detail when created
-                    // navController.navigate("userDetail/$userId")
                 },
                 onBottomNavClick = { index ->
                     handleBottomNavigation(navController, index)
