@@ -197,19 +197,49 @@ fun SensusPage(
                 }
                 
                 Spacer(modifier = Modifier.height(20.dp))
-                
-                LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    items(sensusList) { sensus ->
-                        SensusCard(
-                            sensus = sensus,
-                            onClick = { onItemClick(sensus.sensus_id) }
+
+                if (isLoading && sensusList.isEmpty()) {
+                    Box(
+                        modifier = Modifier.fillMaxSize()
+                            .padding(vertical = 32.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator(
+                            color = RailSensusTheme.blueColor
                         )
                     }
-                    
-                    item {
-                        Spacer(modifier = Modifier.height(80.dp))
+                } else if (filteredList.isEmpty()) {
+                    Box(
+                        modifier = Modifier.fillMaxWidth()
+                            .padding(vertical = 32.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = if (searchQuery.isBlank()) {
+                                "Belum ada sensus"
+                            } else {
+                                "Tidak ada hasil pencarian untuk \"$searchQuery\""
+                            },
+                            style = TextStyle(
+                                fontSize = 14.sp,
+                                color = RailSensusTheme.lightGrayColor,
+                                fontFamily = RailSensusTheme.blueFontFamily
+                            )
+                        )
+                    }
+                } else {
+                    LazyColumn(
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        items(filteredList) { sensus ->
+                            SensusCard(
+                                sensus = sensus,
+                                onClick = { onItemClick(sensus.sensus_id) }
+                            )
+                        }
+                        item {
+                            Spacer(modifier = Modifier.height(80.dp))
+                        }
                     }
                 }
             }
@@ -219,8 +249,12 @@ fun SensusPage(
     if (showDialog) {
         TambahSensusDialog(
             onDismiss = { showDialog = false },
-            onSave = { data ->
-                // TODO: Handle save data
+            onSave = { sensusDetail ->
+                currentToken?.let { token ->
+                    sensusViewModel.updateLokoId(sensusDetail.loko_id)
+                    sensusViewModel.updateKaId(sensusDetail.ka_id)
+                    sensusViewModel.createSensus(token)
+                }
                 showDialog = false
             }
         )
