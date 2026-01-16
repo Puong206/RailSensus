@@ -35,8 +35,8 @@ import com.example.railsensus.R
 @Composable
 fun LandingPage(
     modifier: Modifier = Modifier,
-//    onSignIn: () -> Unit = {},
-//    onSignUp: () -> Unit = {}
+    onLoginClick: () -> Unit = {},
+    onRegisterClick: () -> Unit = {}
 ) {
     Column (modifier = Modifier
         .fillMaxSize()
@@ -163,7 +163,7 @@ fun LandingPage(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Button(
-                    onClick = { },
+                    onClick = onLoginClick,
                     modifier = Modifier
                         .width(112.dp)
                         .height(40.dp),
@@ -184,7 +184,7 @@ fun LandingPage(
                 }
 
                 OutlinedButton(
-                    onClick = { },
+                    onClick = onRegisterClick,
                     modifier = Modifier
                         .width(112.dp)
                         .height(40.dp),
