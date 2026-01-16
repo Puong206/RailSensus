@@ -55,7 +55,7 @@ data class DetailRegister(
     val username: String = "",
     val email: String = "",
     val password: String = "",
-    val confirmPassowrd: String = ""
+    val confirmPassword: String = ""
 )
 
 data class UIRegisterState(
@@ -111,5 +111,5 @@ fun DetailRegister.isValid(): Boolean {
     return username.isNotEmpty() &&
             email.isNotEmpty() &&
             password.isNotEmpty() &&
-            password == confirmPassowrd
+            password == confirmPassword
 }
