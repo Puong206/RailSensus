@@ -1,4 +1,4 @@
-package com.example.railsensus.view.user
+package com.example.railsensus.view.lokomotif
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,7 +22,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.railsensus.modeldata.Lokomotif
 import com.example.railsensus.ui.component.RailSensusLogo
 import com.example.railsensus.ui.component.RailSensusTheme
-import com.example.railsensus.view.lokomotif.TambahLokoDialog
+import com.example.railsensus.view.user.RailSensusBottomNavigation
 import com.example.railsensus.viewmodel.LokoViewModel
 import com.example.railsensus.viewmodel.provider.RailSensusViewModel
 
