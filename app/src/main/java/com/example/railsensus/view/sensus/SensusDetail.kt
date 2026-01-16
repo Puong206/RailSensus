@@ -1,4 +1,4 @@
-package com.example.railsensus.view.user
+package com.example.railsensus.view.sensus
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -14,13 +14,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.railsensus.R
 import com.example.railsensus.ui.component.RailSensusTheme
 import com.example.railsensus.viewmodel.SensusViewModel
 import com.example.railsensus.viewmodel.provider.RailSensusViewModel
@@ -130,7 +130,7 @@ fun SensusDetailPage(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(
-                            brush = androidx.compose.ui.graphics.Brush.verticalGradient(
+                            brush = Brush.verticalGradient(
                                 colors = listOf(
                                     Color.Transparent,
                                     Color.Black.copy(alpha = 0.5f)
