@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.railsensus.ui.component.RailSensusTheme
+import com.example.railsensus.viewmodel.LoginViewModel
 import com.example.railsensus.viewmodel.SensusViewModel
 import com.example.railsensus.viewmodel.provider.RailSensusViewModel
 
@@ -34,23 +35,34 @@ fun SensusDetailPage(
     onInvalidClick: () -> Unit = {},
     onProfileClick: () -> Unit = {},
     onReportClick: () -> Unit = {},
-    onEditClick: () -> Unit = {},
-    onTambahFotoClick: () -> Unit = {},
-    sensusViewModel: SensusViewModel = viewModel(factory = RailSensusViewModel.Factory)
+    onDeleteClick: () -> Unit = {},
+    sensusViewModel: SensusViewModel = viewModel(factory = RailSensusViewModel.Factory),
+    loginViewModel: LoginViewModel = viewModel(factory = RailSensusViewModel.Factory)
 ) {
+    var showEditDialog by remember { mutableStateOf(false) }
+    var showMenu by remember { mutableStateOf(false) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    
     val selectedSensus by sensusViewModel.selectedSensus.collectAsState()
     val isLoading by sensusViewModel.isLoading.collectAsState()
     val errorMessage by sensusViewModel.errorMessage.collectAsState()
+    val currentUser by loginViewModel.currentUser.collectAsState()
+    val currentToken by loginViewModel.currentToken.collectAsState()
+    
+    // Check if current user is the owner of this sensus
+    val isOwner = selectedSensus?.user_id == currentUser?.user_id
     
     LaunchedEffect(sensusId) {
         sensusViewModel.loadSensusById(sensusId)
     }
     Scaffold(
         bottomBar = {
-            SensusDetailBottomBar(
-                onEditClick = onEditClick,
-                onTambahFotoClick = onTambahFotoClick
-            )
+            if (isOwner) {
+                SensusDetailBottomBar(
+                    onEditClick = { showEditDialog = true },
+                    onDeleteClick = { showDeleteDialog = true }
+                )
+            }
         }
     ) { paddingValues ->
         when {
@@ -156,6 +168,62 @@ fun SensusDetailPage(
                         contentDescription = "Back",
                         tint = RailSensusTheme.blueColor
                     )
+                }
+                
+                // Menu Button (Delete for owner only)
+                if (isOwner) {
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(16.dp)
+                    ) {
+                        IconButton(
+                            onClick = { showMenu = true },
+                            modifier = Modifier
+                                .size(40.dp)
+                                .background(
+                                    color = Color.White.copy(alpha = 0.9f),
+                                    shape = RoundedCornerShape(12.dp)
+                                )
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.MoreVert,
+                                contentDescription = "Menu",
+                                tint = RailSensusTheme.blueColor
+                            )
+                        }
+                        
+                        DropdownMenu(
+                            expanded = showMenu,
+                            onDismissRequest = { showMenu = false }
+                        ) {
+                            DropdownMenuItem(
+                                text = {
+                                    Row(
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Delete,
+                                            contentDescription = null,
+                                            tint = RailSensusTheme.orangeColor
+                                        )
+                                        Text(
+                                            text = "Hapus",
+                                            style = TextStyle(
+                                                color = RailSensusTheme.orangeColor,
+                                                fontFamily = RailSensusTheme.blueFontFamily
+                                            )
+                                        )
+                                    }
+                                },
+                                onClick = {
+                                    showMenu = false
+                                    showDeleteDialog = true
+                                }
+                            )
+                        }
+                    }
                 }
                 
                 // Train Info
@@ -320,7 +388,11 @@ fun SensusDetailPage(
                             horizontalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
                             OutlinedButton(
-                                onClick = onValidClick,
+                                onClick = {
+                                    currentToken?.let { token ->
+                                        sensusViewModel.voteSensus(token, sensusId, "valid")
+                                    }
+                                },
                                 modifier = Modifier
                                     .weight(1f)
                                     .height(48.dp),
@@ -349,7 +421,7 @@ fun SensusDetailPage(
                                         )
                                     )
                                     Text(
-                                        text = "(0)",
+                                        text = "(${selectedSensus?.valid_votes ?: 0})",
                                         style = TextStyle(
                                             fontSize = 12.sp,
                                             fontFamily = RailSensusTheme.blueFontFamily
@@ -359,7 +431,11 @@ fun SensusDetailPage(
                             }
                             
                             OutlinedButton(
-                                onClick = onInvalidClick,
+                                onClick = {
+                                    currentToken?.let { token ->
+                                        sensusViewModel.voteSensus(token, sensusId, "invalid")
+                                    }
+                                },
                                 modifier = Modifier
                                     .weight(1f)
                                     .height(48.dp),
@@ -388,7 +464,7 @@ fun SensusDetailPage(
                                         )
                                     )
                                     Text(
-                                        text = "(0)",
+                                        text = "(${selectedSensus?.invalid_votes ?: 0})",
                                         style = TextStyle(
                                             fontSize = 12.sp,
                                             fontFamily = RailSensusTheme.blueFontFamily
@@ -606,12 +682,104 @@ fun SensusDetailPage(
             }
         }
     }
+    
+    // Edit Dialog
+    if (showEditDialog) {
+        EditSensusDialog(
+            onDismiss = { showEditDialog = false },
+            onSave = { detail ->
+                // TODO: Call updateSensus in SensusViewModel
+                // currentToken?.let { token ->
+                //     sensusViewModel.updateSensus(token, sensusId, detail)
+                // }
+                showEditDialog = false
+            },
+            initialSensus = selectedSensus
+        )
+    }
+    
+    // Delete Confirmation Dialog
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            icon = {
+                Icon(
+                    imageVector = Icons.Default.Warning,
+                    contentDescription = null,
+                    tint = RailSensusTheme.orangeColor,
+                    modifier = Modifier.size(48.dp)
+                )
+            },
+            title = {
+                Text(
+                    text = "Hapus Sensus",
+                    style = TextStyle(
+                        fontSize = 20.sp,
+                        color = RailSensusTheme.blueColor,
+                        fontFamily = RailSensusTheme.orangeFontFamily,
+                        fontWeight = FontWeight.Bold
+                    )
+                )
+            },
+            text = {
+                Text(
+                    text = "Apakah Anda yakin ingin menghapus sensus ini? " +
+                            "Data yang sudah dihapus tidak dapat dikembalikan.",
+                    style = TextStyle(
+                        fontSize = 14.sp,
+                        color = RailSensusTheme.blueColor,
+                        fontFamily = RailSensusTheme.blueFontFamily
+                    )
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        currentToken?.let { token ->
+                            sensusViewModel.deleteSensus(token, sensusId)
+                        }
+                        showDeleteDialog = false
+                        onDeleteClick()
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = RailSensusTheme.orangeColor
+                    ),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text(
+                        text = "Hapus",
+                        style = TextStyle(
+                            fontFamily = RailSensusTheme.blueFontFamily,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    )
+                }
+            },
+            dismissButton = {
+                OutlinedButton(
+                    onClick = { showDeleteDialog = false },
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = RailSensusTheme.blueColor
+                    ),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text(
+                        text = "Batal",
+                        style = TextStyle(
+                            fontFamily = RailSensusTheme.blueFontFamily,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    )
+                }
+            }
+        )
+    }
 }
 
 @Composable
 fun SensusDetailBottomBar(
     onEditClick: () -> Unit,
-    onTambahFotoClick: () -> Unit,
+    onDeleteClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Surface(
@@ -661,7 +829,7 @@ fun SensusDetailBottomBar(
             }
             
             Button(
-                onClick = onTambahFotoClick,
+                onClick = onDeleteClick,
                 modifier = Modifier
                     .weight(1f)
                     .height(52.dp),
@@ -676,12 +844,12 @@ fun SensusDetailBottomBar(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
-                        imageVector = Icons.Default.CameraAlt,
+                        imageVector = Icons.Default.Delete,
                         contentDescription = null,
                         modifier = Modifier.size(20.dp)
                     )
                     Text(
-                        text = "Tambah Foto",
+                        text = "Hapus",
                         style = TextStyle(
                             fontSize = 15.sp,
                             fontFamily = RailSensusTheme.blueFontFamily,
