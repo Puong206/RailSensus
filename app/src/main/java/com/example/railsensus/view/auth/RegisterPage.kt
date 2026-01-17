@@ -33,6 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.railsensus.modeldata.DetailRegister
 import com.example.railsensus.ui.component.RailSensusBackButton
 import com.example.railsensus.ui.component.RailSensusButton
 import com.example.railsensus.ui.component.RailSensusLogo
@@ -52,12 +53,17 @@ fun RegisterPage(
     viewModel: LoginViewModel = viewModel(factory = RailSensusViewModel.Factory)
 ) {
     val registerState by viewModel.registerState.collectAsState()
+    var hasNavigated by remember { mutableStateOf(false) }
+    var previousLoadingState by remember { mutableStateOf(false) }
 
-    LaunchedEffect(registerState.errorMessage == null &&
-    !registerState.isLoading) {
-        if (viewModel.isLoggedIn()) {
-            onRegisterSuccess()
+    LaunchedEffect(registerState.isLoading) {
+        if (previousLoadingState && !registerState.isLoading) {
+            if (registerState.errorMessage == null && !hasNavigated) {
+                hasNavigated = true
+                onRegisterSuccess()
+            }
         }
+        previousLoadingState = registerState.isLoading
     }
 
     Column(
