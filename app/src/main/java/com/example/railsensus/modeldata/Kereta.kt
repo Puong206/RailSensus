@@ -15,6 +15,7 @@ data class StatistikKereta(
 )
 
 //Create / Update
+@Serializable
 data class CreateKeretaRequest(
     val nama_ka: String,
     val nomor_ka: String  // ← Changed from no_ka
