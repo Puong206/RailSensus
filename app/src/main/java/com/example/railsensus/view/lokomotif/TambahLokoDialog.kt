@@ -86,58 +86,6 @@ fun TambahLokoDialog(
                         )
                     }
                     
-                    Column(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Text(
-                            text = "Foto Loko",
-                            style = TextStyle(
-                                fontSize = 14.sp,
-                                color = RailSensusTheme.blueColor,
-                                fontFamily = RailSensusTheme.blueFontFamily,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                        )
-                        
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(140.dp)
-                                .background(
-                                    color = Color(0xFFF8F9FB),
-                                    shape = RoundedCornerShape(12.dp)
-                                )
-                                .border(
-                                    width = 1.dp,
-                                    color = Color(0xFFE0E0E0),
-                                    shape = RoundedCornerShape(12.dp)
-                                )
-                                .clickable { /* TODO: Open camera */ },
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.CameraAlt,
-                                    contentDescription = "Camera",
-                                    tint = RailSensusTheme.lightGrayColor,
-                                    modifier = Modifier.size(32.dp)
-                                )
-                                Text(
-                                    text = "Ketuk untuk ambil foto",
-                                    style = TextStyle(
-                                        fontSize = 13.sp,
-                                        color = RailSensusTheme.lightGrayColor,
-                                        fontFamily = RailSensusTheme.blueFontFamily
-                                    )
-                                )
-                            }
-                        }
-                    }
-                    
                     // Nomor Seri
                     Column(
                         modifier = Modifier.fillMaxWidth(),
