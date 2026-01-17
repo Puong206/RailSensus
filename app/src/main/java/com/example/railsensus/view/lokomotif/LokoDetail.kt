@@ -29,17 +29,17 @@ import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.railsensus.ui.component.RailSensusTheme
 import com.example.railsensus.viewmodel.LokoViewModel
+import com.example.railsensus.viewmodel.LoginViewModel
 import com.example.railsensus.viewmodel.provider.RailSensusViewModel
 
 @Composable
 fun LokoDetailPage(
     lokoId: Int,
+    onBackClick: () -> Unit,
+    onDeleteClick: () -> Unit,
     modifier: Modifier = Modifier,
-    onBackClick: () -> Unit = {},
-    onEditClick: () -> Unit = {},
-    onTambahFotoClick: () -> Unit = {},
-    onDeleteClick: () -> Unit = {},
-    lokoViewModel: LokoViewModel = viewModel(factory = RailSensusViewModel.Factory)
+    lokoViewModel: LokoViewModel = viewModel(factory = RailSensusViewModel.Factory),
+    loginViewModel: LoginViewModel = viewModel(factory = RailSensusViewModel.Factory)
 ) {
     val selectedLoko by lokoViewModel.selectedLoko.collectAsState()
     val isLoading by lokoViewModel.isLoading.collectAsState()
@@ -56,7 +56,7 @@ fun LokoDetailPage(
         bottomBar = {
             LokoDetailBottomBar(
                 onEditClick = { showEditDialog = true },
-                onTambahFotoClick = onTambahFotoClick
+                onTambahFotoClick = {}
             )
         }
     ) { paddingValues ->
@@ -308,57 +308,11 @@ fun LokoDetailPage(
                 }
                 
                 Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = "Galeri Foto",
-                    style = TextStyle(
-                        fontSize = 20.sp,
-                        color = RailSensusTheme.blueColor,
-                        fontFamily = RailSensusTheme.orangeFontFamily,
-                        fontWeight = FontWeight.Bold
-                    )
-                )
-                
-                val photos = listOf(1, 2, 3)
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    photos.chunked(2).forEach { rowPhotos ->
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(12.dp)
-                        ) {
-                            rowPhotos.forEach { _ ->
-                                PhotoCard(
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .height(160.dp)
-                                )
-                            }
-                            if (rowPhotos.size == 1) {
-                                Spacer(modifier = Modifier.weight(1f))
-                            }
-                        }
-                    }
-                }
-                Spacer(modifier = Modifier.height(16.dp))
             }
         }
             }
         }
     }
-    
-    // TODO: Implement EditLokoDialog
-    // if (showEditDialog) {
-    //     EditLokoDialog(
-    //         onDismiss = { showEditDialog = false },
-    //         onSave = { detail ->
-    //             // TODO: Update via ViewModel
-    //             showEditDialog = false
-    //         },
-    //         initialLoko = selectedLoko
-    //     )
-    // }
     
     // Show Delete Confirmation Dialog
     if (showDeleteDialog) {
@@ -458,6 +412,7 @@ fun LokoDetailBottomBar(
             OutlinedButton(
                 onClick = onEditClick,
                 modifier = Modifier
+                    .fillMaxWidth()
                     .weight(1f)
                     .height(52.dp),
                 shape = RoundedCornerShape(12.dp),
@@ -480,33 +435,6 @@ fun LokoDetailBottomBar(
                         fontSize = 15.sp,
                         fontFamily = RailSensusTheme.blueFontFamily,
                         fontWeight = FontWeight.SemiBold
-                    )
-                )
-            }
-            
-            Button(
-                onClick = onTambahFotoClick,
-                modifier = Modifier
-                    .weight(1f)
-                    .height(52.dp),
-                shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = RailSensusTheme.orangeColor,
-                    contentColor = Color.White
-                )
-            ) {
-                Icon(
-                    imageVector = Icons.Default.CameraAlt,
-                    contentDescription = null,
-                    modifier = Modifier.size(20.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "Tambah Foto",
-                    style = TextStyle(
-                        fontSize = 15.sp,
-                        fontFamily = RailSensusTheme.orangeFontFamily,
-                        fontWeight = FontWeight.Bold
                     )
                 )
             }
