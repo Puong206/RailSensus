@@ -352,6 +352,10 @@ fun LokoDetailPage(
             confirmButton = {
                 Button(
                     onClick = {
+                        val currentToken = loginViewModel.currentToken.value
+                        if (currentToken != null) {
+                            lokoViewModel.deleteLoko(currentToken, lokoId)
+                        }
                         showDeleteDialog = false
                         onDeleteClick()
                     },
