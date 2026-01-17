@@ -17,6 +17,7 @@ data class StatistikLoko(
 )
 
 //Create / Update
+@Serializable
 data class CreateLokoRequest(
     val nomor_seri: String,
     val dipo_induk: String,
