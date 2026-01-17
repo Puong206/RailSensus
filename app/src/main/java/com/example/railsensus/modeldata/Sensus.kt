@@ -20,6 +20,7 @@ data class Sensus(
 )
 
 // Create
+@Serializable
 data class CreateSensusRequest(
     val loko_id: Int,
     val ka_id: Int

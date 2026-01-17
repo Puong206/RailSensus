@@ -29,13 +29,8 @@ import com.example.railsensus.viewmodel.provider.RailSensusViewModel
 @Composable
 fun SensusDetailPage(
     sensusId: Int,
+    onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
-    onBackClick: () -> Unit = {},
-    onValidClick: () -> Unit = {},
-    onInvalidClick: () -> Unit = {},
-    onProfileClick: () -> Unit = {},
-    onReportClick: () -> Unit = {},
-    onDeleteClick: () -> Unit = {},
     sensusViewModel: SensusViewModel = viewModel(factory = RailSensusViewModel.Factory),
     loginViewModel: LoginViewModel = viewModel(factory = RailSensusViewModel.Factory)
 ) {
@@ -50,7 +45,7 @@ fun SensusDetailPage(
     val currentToken by loginViewModel.currentToken.collectAsState()
     
     // Check if current user is the owner of this sensus
-    val isOwner = selectedSensus?.user_id == currentUser?.user_id
+    val isOwner = selectedSensus?.user_id == currentUser?.id
     
     LaunchedEffect(sensusId) {
         sensusViewModel.loadSensusById(sensusId)
@@ -650,32 +645,6 @@ fun SensusDetailPage(
                     }
                 }
                 
-                // Report Button
-                TextButton(
-                    onClick = onReportClick,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(6.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Warning,
-                            contentDescription = null,
-                            tint = RailSensusTheme.lightGrayColor,
-                            modifier = Modifier.size(16.dp)
-                        )
-                        Text(
-                            text = "Laporkan kesalahan data",
-                            style = TextStyle(
-                                fontSize = 13.sp,
-                                color = RailSensusTheme.lightGrayColor,
-                                fontFamily = RailSensusTheme.blueFontFamily
-                            )
-                        )
-                    }
-                }
-                
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
@@ -739,7 +708,7 @@ fun SensusDetailPage(
                             sensusViewModel.deleteSensus(token, sensusId)
                         }
                         showDeleteDialog = false
-                        onDeleteClick()
+                        onBackClick()
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = RailSensusTheme.orangeColor

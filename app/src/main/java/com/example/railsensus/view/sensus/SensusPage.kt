@@ -245,16 +245,37 @@ fun SensusPage(
         }
     }
     
+    // Observer for form state to handle success/error
+    val formState = sensusViewModel.sensusFormState.collectAsState().value
+    val context = androidx.compose.ui.platform.LocalContext.current
+    var previousLoading by remember { mutableStateOf(false) }
+
+    LaunchedEffect(formState.isLoading) {
+        if (previousLoading && !formState.isLoading) {
+            if (formState.errorMessage == null) {
+                showDialog = false
+                android.widget.Toast.makeText(context, "Berhasil menambah sensus", android.widget.Toast.LENGTH_SHORT).show()
+            } else {
+                android.widget.Toast.makeText(context, formState.errorMessage, android.widget.Toast.LENGTH_SHORT).show()
+            }
+        }
+        previousLoading = formState.isLoading
+    }
+
     if (showDialog) {
         TambahSensusDialog(
             onDismiss = { showDialog = false },
             onSave = { sensusDetail ->
-                currentToken?.let { token ->
-                    sensusViewModel.updateLokoId(sensusDetail.loko_id)
-                    sensusViewModel.updateKaId(sensusDetail.ka_id)
-                    sensusViewModel.createSensus(token)
+                if (currentToken == null) {
+                    android.widget.Toast.makeText(context, "Anda belum login! Silakan login kembali.", android.widget.Toast.LENGTH_LONG).show()
+                } else {
+                    currentToken?.let { token ->
+                        sensusViewModel.updateLokoId(sensusDetail.loko_id)
+                        sensusViewModel.updateKaId(sensusDetail.ka_id)
+                        sensusViewModel.createSensus(token)
+                    }
                 }
-                showDialog = false
+                // Do NOT close dialog here, wait for success
             }
         )
     }
